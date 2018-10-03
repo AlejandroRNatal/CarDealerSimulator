@@ -2,7 +2,9 @@ package edu.uprm.cse.datastructures.cardealer.model;
 
 import java.util.Comparator;
 
-public class CarComparator implements Comparator<Object>
+import edu.uprm.cse.datastructures.cardealer.util.AbstractComparator;
+
+public class CarComparator extends AbstractComparator<Object>
 {
 	//Assume Objects provided aren't null
 	
@@ -40,6 +42,7 @@ public class CarComparator implements Comparator<Object>
 		return car1Brand.compareToIgnoreCase(car2Brand);
 	}
 
+	@Override
 	public int compare(Object o1, Object o2) 
 	{
 		if(compareBrands((Car)o1,(Car)o2)== 0)

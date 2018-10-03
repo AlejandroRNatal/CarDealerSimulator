@@ -7,6 +7,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
+import edu.uprm.cse.datastructures.cardealer.util.CSDLL;
 
 public class CarTester {
 
@@ -14,6 +15,8 @@ public class CarTester {
 	private static final String[] models = new String[10];
 	private static final String[] options = new String[2];
 	private Random rand = new Random();
+	//private CSDLL<Car> list =  new CSDLL();
+	
 	
 	public Car[] cars()
 	{
