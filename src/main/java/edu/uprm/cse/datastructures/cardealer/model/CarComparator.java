@@ -4,12 +4,14 @@ import java.util.Comparator;
 
 import edu.uprm.cse.datastructures.cardealer.util.AbstractComparator;
 
-public class CarComparator extends AbstractComparator<Object>
+public class CarComparator extends AbstractComparator<Car>
 {
 	//Assume Objects provided aren't null
 	
 	public int compareModelOption(Car car1, Car car2)
 	{
+		if(car1 == null |car2 == null )
+			return 0;
 		String car1ModelOption = car1.getCarModelOption();
 		String car2ModelOption = car2.getCarModelOption();
 		
@@ -20,6 +22,8 @@ public class CarComparator extends AbstractComparator<Object>
 	
 	public int compareModels(Car car1, Car car2)
 	{
+		if(car1 == null |car2 == null )
+			return 0;
 		String car1Model = car1.getCarModel();
 		String car2Model = car2.getCarModel();
 		
@@ -31,6 +35,8 @@ public class CarComparator extends AbstractComparator<Object>
 	
 	public int compareBrands(Car car1, Car car2) 
 	{
+		if(car1 == null |car2 == null )
+			return 0;
 		
 		String car1Brand = car1.getCarBrand();
 		String car2Brand = car2.getCarBrand();
@@ -43,23 +49,28 @@ public class CarComparator extends AbstractComparator<Object>
 	}
 
 	@Override
-	public int compare(Object o1, Object o2) 
+	public int compare(Car o1, Car o2) 
 	{
-		if(compareBrands((Car)o1,(Car)o2)== 0)
-		{
-			if(compareModels((Car)o1,(Car)o2)== 0)
-			{
-				if(compareModelOption((Car)o1, (Car)o2) ==0)
-					return 0;
-				
-				return compareModelOption((Car)o1, (Car)o2);
-			}
-				
-			return compareModels((Car)o1,(Car)o2);
-		}
-		
-		return compareBrands((Car)o1,(Car)o2);
-		
+//		if(compareBrands((Car)o1,(Car)o2)== 0)
+//		{
+//			if(compareModels((Car)o1,(Car)o2)== 0)
+//			{
+//				if(compareModelOption((Car)o1, (Car)o2) ==0)
+//					return 0;
+//				
+//				return compareModelOption((Car)o1, (Car)o2);
+//			}
+//				
+//			return compareModels((Car)o1,(Car)o2);
+//		}
+//		
+//		return compareBrands((Car)o1,(Car)o2);
+		if(o1.getCarBrand().compareTo(o2.getCarBrand())!= 0)
+			return o1.getCarBrand().compareTo(o2.getCarBrand());
+		if(o1.getCarModel().compareTo(o2.getCarModel())!= 0)
+			return o1.getCarModel().compareTo(o2.getCarModel());
+		else
+			return o1.getCarModelOption().compareTo(o2.getCarModelOption());
 	}
 
 }

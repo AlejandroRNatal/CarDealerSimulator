@@ -30,12 +30,23 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 	public boolean add(E obj)
 	{
-		DNode<E>ptrLast = this.getLastNode();
-		DNode<E> nuevo = new DNode(obj, ptrLast, ptrLast.getNext());
-		ptrLast.setNext(nuevo);
-
+		if(this.isEmpty())
+		{
+			DNode<E> temp = new DNode(obj,this.first, this.first);
+			this.first.setNext(temp);
+			this.first.setPrev(temp);
+			this.size++;
+			return true;
+		}
+		else{
+			DNode<E>current = this.first.getPrev();
+			DNode<E> nuevo = new DNode(obj, current, this.first);
+			current.setNext(nuevo);
+			this.first.setPrev(nuevo);
+		}
+		
 		this.size++;
-		sort();
+		arraySort();
 		
 		return true;
 	}
@@ -118,7 +129,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 
 	public E first() {
-		return this.first.getElement();
+		return this.first.getNext().getElement();
 	}
 
 	public E last() {
@@ -201,29 +212,62 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		return this.size()-1 % this.size();
 	}
 	
-	private void addFirstNode(DNode<E> nuevo) {
+	private void addFirstNode(DNode<E> nuevo)
+	{
 		addNodeAfter(this.first, nuevo); 
 	}
 
+	private void arraySort()
+	{
+		E[] arr = this.toArray();
+		
+		for(int i = 0; i < arr.length-1; i++)
+		{
+			if(comp.compare(arr[i], arr[i+1])>0)
+				swap(arr,i, i+1);
+//			if(comp.compare(arr[i], arr[i+1])<0)
+//				swap(arr[i+1], arr[i]);
+		}
+		
+		for(int i = 0; i < arr.length-1; i++)
+		{
+			if(comp.compare(arr[i], arr[i+1])>0)
+				swap(arr,i, i+1);
+//			if(comp.compare(arr[i], arr[i+1])<0)
+//				swap(arr[i+1], arr[i]);
+		}
+		
+		for(int i = 0; i < arr.length-1; i++)
+		{
+			if(comp.compare(arr[i], arr[i+1])>0)
+				swap(arr,i, i+1);
+//			if(comp.compare(arr[i], arr[i+1])<0)
+//				swap(arr[i+1], arr[i]);
+		}
+		
+		DNode<E> current = this.first.getNext();
+		//DNode<E> current = this.first;
+		for(int i = 0 ; i <arr.length; i++)
+		{
+			current.setElement(arr[i]);
+			current =current.getNext();
+		}
+	}
 	private void sort()
 	{
+		int n = 0;
 		DNode<E> temp = this.first;
-		DNode<E> prev = this.first.getPrev();
 		DNode<E> after = this.first.getNext();
-		Iterator<E> iter = iterator();
-		//while(!after.getNext().equals(this.first))
-		while(iter.hasNext())
+		while(!after.getNext().equals(this.first))
+		//while(iter.hasNext())
 		{
-			int n = comp.compare(temp.getElement(),after.getElement());
+			if(temp.getElement()!=null | after.getElement()!=null )
+				n = comp.compare(temp.getElement(),after.getElement());
+			if(temp.getElement()== null |after.getElement()==null )
+				n=0;
 			switch(n)
 			{
 				case 1:
-//					prev.setNext(after);//0->2
-//					after.setPrev(temp.getPrev());//0<-2
-//					temp.setPrev(after);//2 <- 1
-//					temp.setNext(after.getNext());//1 -> 3
-//					after.getNext().setPrev(temp);//3<-1
-//					after.setNext(temp);//2-> 1
 					swapElements(temp, after);
 					break;
 			
@@ -231,25 +275,30 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 				default:
 					break;
 			}
-			prev = temp;
 			temp = after;
 			after = after.getNext();
 		}
 		
-		prev = temp;
-		temp = after;
-		after = after.getNext();
-		int n = comp.compare(temp.getElement(),after.getElement());
-		switch(n)
-		{
-			case 1:
-				swapElements(temp ,after);
-				break;
-		
-				
-			default:
-				break;
-		}
+//		temp = after;
+//		after = after.getNext();
+//		int n = comp.compare(temp.getElement(),after.getElement());
+//		switch(n)
+//		{
+//			case 1:
+//				swapElements(temp ,after);
+//				break;
+//		
+//				
+//			default:
+//				break;
+//		}
+	}
+	
+	private void swap(E[] arr,int target, int rec)
+	{
+		E temp = arr[rec];
+		arr[rec] = arr[target];
+		arr[target] = temp;
 	}
 	
 	private void swapElements(DNode<E> target, DNode<E> rec)
@@ -259,11 +308,31 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		rec.setElement(temp);
 	}
 	
+	private E[] toArray()
+	{
+		DNode<E> ptr = this.first.getNext();
+		E[] arr = (E[])new Object[this.size()];
+		
+		for(int i = 0 ; i < this.size(); i++)
+		{
+			arr[i] = ptr.getElement();
+			ptr = ptr.getNext();
+		}
+		
+		return arr;
+	}
+	
+	
 	public void printList()
 	{
-		while(this.iterator().hasNext())
-			System.out.println(this.iterator().next());
-		
+		DNode<E> ptr = this.first;
+		//while(this.iterator().hasNext())
+		while(ptr.getNext()!= this.first)
+		{
+			System.out.println(ptr);
+			ptr = ptr.getNext();
+		}
+		System.out.println(ptr);
 	}
 	
 	private void addNodeAfter(DNode<E> target, DNode<E> nuevo) {
@@ -351,6 +420,12 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 			element = e;
 		}
 		
+		
+		public String toString()
+		{
+			return "{"+this.getElement()+ "} ";
+			
+		}
 		// Methods
 		public DNode<E> getPrev() {
 			return prev;
@@ -380,6 +455,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 			prev = next = null; 
 		}
 		
+	
 	}
 
 }

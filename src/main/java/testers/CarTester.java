@@ -15,17 +15,17 @@ public class CarTester {
 	private static final String[] models = new String[10];
 	private static final String[] options = new String[2];
 	private Random rand = new Random();
-	//private CSDLL<Car> list =  new CSDLL();
-	
-	
+	private CSDLL<Car> list =  new CSDLL();
 	public Car[] cars()
 	{
-		Car[] cars = new Car[20];
+		Car[] cars = new Car[10];
 		
 		for(int i = 0 ; i < 10; i++)
 		{
-			for(int j = 0; j < 2 ; j++)
-				cars[0] = new Car((long)i,brands[i],models[i],options[j], rand.nextDouble());
+			//for(int j = 0; j < 2 ; j++)
+				//cars[i] = new Car((long)i,brands[i],models[i],options[rand.nextInt(2)], rand.nextDouble());
+				cars[i] = new Car((long)i,brands[rand.nextInt(10)],models[rand.nextInt(10)],options[rand.nextInt(2)], rand.nextDouble());
+				
 		}
 		
 		return cars;
@@ -76,7 +76,15 @@ public class CarTester {
 	{
 		setup();
 		Car[] cars = cars();
+		for(Car c: cars)
+		{
+			System.out.println(c);
+			list.add(c);
+		}
 		
+		System.out.println();
+		
+		list.printList();
 	}
 
 }
