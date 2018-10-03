@@ -1,4 +1,4 @@
-package main.java.edu.uprm.cse.datastructures.cardealer.util;
+package edu.uprm.cse.datastructures.cardealer.util;
 
 import java.util.Iterator;
 
