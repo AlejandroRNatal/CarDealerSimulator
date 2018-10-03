@@ -1,5 +1,5 @@
 /* Copyright © 2015 Oracle and/or its affiliates. All rights reserved. */
-package com.example.rest;
+package exceptions;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

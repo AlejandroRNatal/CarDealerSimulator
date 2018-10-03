@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
+//import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -16,11 +16,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import exceptions.*;
+import exceptions.JsonError;
+import exceptions.NotFoundException;
 import edu.uprm.cse.datastructures.cardealer.model.Car;
 
 @Path("/cars")
-public class CarManager {
+public class CarManager
+{
 
 	private final CopyOnWriteArrayList<Car> cList = MockCarList.getInstance();   
 	
@@ -76,9 +78,9 @@ public class CarManager {
 	    @DELETE
 	    @Path("/remove/{id}")
 	    public void deleteCustomer(@PathParam("id") long id){
-	      Predicate<Car> car = c -> c.getId() == id;
+	      Predicate<Car> car = (c->c.getId() == id);
 	      if (!cList.removeIf(car)) {
-	       throw new NotFoundException(new JsonError("Error", "Customer " + id + " not found"));
+	       throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
 	      }
 	    }       
 }

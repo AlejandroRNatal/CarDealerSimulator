@@ -1,12 +1,13 @@
 package edu.uprm.cse.datastructures.cardealer.util;
 
+
 import java.util.Iterator;
+
 import edu.uprm.cse.datastructures.cardealer.util.SortedList;
 
 public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 {
 	private DNode<E> first;
-	//private DNode<E> last;
 	private int size;
 	
 	public CircularSortedDoublyLinkedList()
@@ -15,21 +16,29 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		this.size = 0;
 	}
 	
-	public Iterator<E> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+	public Iterator<E> iterator() 
+	{
+		return (Iterator<E>) new CircularIterator(this.first);
 	}
 
-	public boolean add(E obj) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean add(E obj)
+	{
+		DNode<E>ptrLast = this.getLastNode();
+		DNode<E> nuevo = new DNode(obj, ptrLast, ptrLast.getNext());
+		ptrLast.setNext(nuevo);
+
+		this.size++;
+		
+		return true;
 	}
 
-	public int size() {
+	public int size()
+	{
 		return this.size;
 	}
 
-	public boolean remove(E obj) {
+	public boolean remove(E obj)
+	{
 		if(!contains(obj))
 			return false;
 		
@@ -62,7 +71,8 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		return true;
 	}
 
-	public boolean remove(int index) {
+	public boolean remove(int index)
+	{
 		if(index < 0 | index > this.size())
 			return false;
 		
@@ -126,12 +136,20 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		return ptr.getElement();
 	}
 
-	public void clear() {
-		// TODO Auto-generated method stub
+	public void clear()
+	{
+		if(this.isEmpty())
+			return;
+		
 		DNode<E> temp = this.first;
-		while(this.size()>0)
+		DNode<E> after = temp.getNext();
+		while(!after.getNext().equals(null))
 		{
-			
+			temp.cleanLinks();
+			temp.setElement(null);
+			temp = after;
+			after = after.getNext();
+			this.size--;
 		}
 	}
 
@@ -146,7 +164,10 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		while(i < this.size())
 		{
 			if(ptr.getElement().equals(e))
+			{
 				contains = true;
+				break;
+			}
 			ptr = ptr.getNext();
 			
 		}
@@ -159,7 +180,8 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 
 	
-	public int firstIndex(E e) {
+	public int firstIndex(E e)
+	{
 		//Returns -1 if list is empty
 		if(this.isEmpty())
 			return -1;
@@ -169,8 +191,78 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	public int lastIndex(E e) {
 		return this.size()-1 % this.size();
 	}
+	
+	private void addFirstNode(DNode<E> nuevo) {
+		addNodeAfter(this.first, nuevo); 
+	}
 
-	private static class DNode<E>  {
+	private void addNodeAfter(DNode<E> target, DNode<E> nuevo) {
+		
+		if(target.equals(this.getLastNode()))
+		{
+			addLastNode(nuevo);
+			return;
+		}
+		DNode<E> dnuevo = (DNode<E>) nuevo; 
+		DNode<E> nBefore = (DNode<E>) target; 
+		DNode<E> nAfter = nBefore.getNext(); 
+		nBefore.setNext(dnuevo); 
+		nAfter.setPrev(dnuevo); 
+		dnuevo.setPrev(nBefore); 
+		dnuevo.setNext(nAfter); 
+		
+		this.size++; 
+	}
+	
+	private void addLastNode(DNode<E> nuevo)
+	{ 
+		DNode<E> dnuevo = (DNode<E>) nuevo; 
+		DNode<E> trailer = this.getLastNode();
+		DNode<E> nBefore = trailer.getPrev();  
+		
+		nBefore.setNext(dnuevo); 
+		trailer.setPrev(dnuevo); 
+		dnuevo.setPrev(nBefore); 
+		dnuevo.setNext(trailer); 
+		
+		this.size++; 
+	}
+
+	
+	private DNode<E> getLastNode(){
+		if (isEmpty()) 
+			throw new IllegalStateException("List is empty."); 
+		
+		DNode<E> ptr = this.first;
+		while(!ptr.getNext().equals(this.first))
+			ptr = ptr.getNext();
+		
+		return ptr;
+	}
+
+
+	
+	private void addNodeBefore(DNode<E> target, DNode<E> nuevo)
+	{
+		if(target.equals(this.first))
+		{
+			addFirstNode(nuevo);
+		}
+		
+		DNode<E> dnuevo = (DNode<E>) nuevo; 
+		DNode<E> nBefore = ((DNode<E>) target).getPrev(); 
+		
+		nBefore.setNext(dnuevo); 
+		dnuevo.setPrev(nBefore); 
+		dnuevo.setNext((DNode<E>)target);
+		((DNode<E>)target).setPrev(dnuevo);
+		 
+		this.size++;
+	}
+
+
+	private static class DNode<E>  implements Node<E>
+	{
 		private E element; 
 		private DNode<E> prev, next; 
 
