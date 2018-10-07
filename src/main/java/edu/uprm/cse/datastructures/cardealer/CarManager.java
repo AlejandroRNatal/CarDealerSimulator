@@ -41,7 +41,7 @@ public class CarManager
 	  public Car getCar(@PathParam("id") long id){
 	    Optional<Car> match
 	        = cList.stream()
-	        .filter(c->c.getId() == id)
+	        .filter(c->c.getCarId() == id)
 	        .findFirst();
 	    if (match.isPresent()) {
 	      return match.get();
@@ -65,7 +65,7 @@ public class CarManager
 	    public Response updateCustomer(Car car){
 	      int matchIdx = 0;
 	      Optional<Car> match = cList.stream()
-	          .filter(c->c.getId() == car.getCarId())
+	          .filter(c->c.getCarId() == car.getCarId())
 	          .findFirst();
 	      if (match.isPresent()) {
 	        matchIdx = cList.indexOf(match.get());
@@ -80,7 +80,7 @@ public class CarManager
 	    @DELETE
 	    @Path("/remove/{id}")
 	    public void deleteCar(@PathParam("id") long id){
-	      Predicate<Car> car = (c->c.getId() == id);
+	      Predicate<Car> car = (c->c.getCarId() == id);
 	      if (!cList.removeIf(car)) {
 	       throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
 	      }
