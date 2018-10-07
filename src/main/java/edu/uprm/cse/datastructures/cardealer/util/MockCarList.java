@@ -1,23 +1,19 @@
-package testers;
-
-import static org.junit.Assert.*;
+package edu.uprm.cse.datastructures.cardealer.util;
 
 import java.util.Random;
-
-import org.junit.Test;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import edu.uprm.cse.datastructures.cardealer.model.Car;
-import edu.uprm.cse.datastructures.cardealer.util.CSDLL;
 
-public class CSDLListTester
-{
-	CSDLL cars = new CSDLL();
+public class MockCarList {
+	private static final CopyOnWriteArrayList<Car> cList = new CopyOnWriteArrayList<Car>();
+
 	private static final String[] brands = new String[10];
 	private static final String[] models = new String[10];
 	private static final String[] options = new String[2];
-	private Random rand = new Random();
-	
-	public Car[] cars()
+	private static Random rand = new Random();
+	//private CSDLL<Car> list =  new CSDLL();
+	public static Car[] cars()
 	{
 		Car[] cars = new Car[10];
 		
@@ -31,8 +27,7 @@ public class CSDLListTester
 		
 		return cars;
 	}
-	
-	private void models()
+	private static void models()
 	{
 		models[0] = "Civic";
 		models[1] = "Corolla";
@@ -46,7 +41,7 @@ public class CSDLListTester
 		models[9] = "Lancer";
 	}
 	
-	private void brands()
+	private static void brands()
 	{
 		brands[0] = "Honda";
 		brands[1] = "Toyota";
@@ -60,37 +55,31 @@ public class CSDLListTester
 		brands[9] = "Mitsubishi";
 	}
 	
-	private void options()
+	private static void options()
 	{
 		options[0] = "LE";
 		options[1] = "SE";
 	}
 	
-	private void setup()
+	private static void setup()
 	{
 		models();
 		options();
 		brands();
 	}
 	
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
+	
+	  static {
+	    // Create list of customers
+		  setup();
+		  for(Car c:  cars())
+			  cList.add(c);
 
-	@Test
-	public void basicOperationsTest()
-	{
-		
-		setup();
-		Car[] cs = cars();
-		//boolean[] cases = new boolean[];
-		
-		for(Car c: cs)
-		{
-			 cars.add(c);
-		}
-		
-		
-	}
+	  }
+	  
+	  private MockCarList(){}
+	  
+	  public static CopyOnWriteArrayList<Car> getInstance(){
+	    return cList;
+	  }
 }

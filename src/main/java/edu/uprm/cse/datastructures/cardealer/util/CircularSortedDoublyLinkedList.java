@@ -30,13 +30,16 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 	public boolean add(E obj)
 	{
+		boolean contains = true;
+		if(this.contains(obj))contains = false;
+			
 		if(this.isEmpty())
 		{
 			DNode<E> temp = new DNode(obj,this.first, this.first);
 			this.first.setNext(temp);
 			this.first.setPrev(temp);
 			this.size++;
-			return true;
+			return contains;
 		}
 		else{
 			DNode<E>current = this.first.getPrev();
@@ -48,7 +51,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		this.size++;
 		arraySort();
 		
-		return true;
+		return contains;
 	}
 
 	public int size()
