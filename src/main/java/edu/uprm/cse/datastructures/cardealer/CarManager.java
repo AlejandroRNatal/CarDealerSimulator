@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import exceptions.JsonError;
 import exceptions.NotFoundException;
 import edu.uprm.cse.datastructures.cardealer.model.Car;
+import edu.uprm.cse.datastructures.cardealer.util.CSDLL;
 import edu.uprm.cse.datastructures.cardealer.util.MockCarList;
 
 @Path("/cars")
@@ -26,6 +27,7 @@ public class CarManager
 {
 
 	private final CopyOnWriteArrayList<Car> cList = MockCarList.getInstance();   
+	private CSDLL<Car> sorting = new CSDLL();
 	
 	@GET
 	@Path("/all")
@@ -60,9 +62,9 @@ public class CarManager
 	    }  
 	   
 	   @PUT
-	    @Path("{id}/update")
+	    @Path("/{id}/update")
 	    @Produces(MediaType.APPLICATION_JSON)
-	    public Response updateCustomer(Car car){
+	    public Response updateCar(Car car){
 	      int matchIdx = 0;
 	      Optional<Car> match = cList.stream()
 	          .filter(c->c.getCarId() == car.getCarId())
@@ -78,11 +80,14 @@ public class CarManager
 	    }
 	   
 	    @DELETE
-	    @Path("/remove/{id}")
-	    public void deleteCar(@PathParam("id") long id){
+	    @Path("/{id}/delete")
+	    public Response deleteCar(@PathParam("id") long id){
 	      Predicate<Car> car = (c->c.getCarId() == id);
 	      if (!cList.removeIf(car)) {
 	       throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
+	      }
+	      else {
+	    	  return Response.status(Response.Status.OK).build();
 	      }
 	    }       
 }
