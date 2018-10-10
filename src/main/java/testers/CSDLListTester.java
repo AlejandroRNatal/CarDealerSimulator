@@ -11,12 +11,11 @@ import edu.uprm.cse.datastructures.cardealer.util.CSDLL;
 
 public class CSDLListTester
 {
-	CSDLL cars = new CSDLL();
 	private static final String[] brands = new String[10];
 	private static final String[] models = new String[10];
 	private static final String[] options = new String[2];
 	private Random rand = new Random();
-	
+	private CSDLL<Car> list =  new CSDLL();
 	public Car[] cars()
 	{
 		Car[] cars = new Car[10];
@@ -73,24 +72,33 @@ public class CSDLListTester
 		brands();
 	}
 	
+	
 	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void basicOperationsTest()
+	public void test()
 	{
-		
 		setup();
-		Car[] cs = cars();
-		//boolean[] cases = new boolean[];
-		
-		for(Car c: cs)
+		Car[] cars = cars();
+		for(Car c: cars)
 		{
-			 cars.add(c);
+			System.out.println(c);
+			list.add(c);
 		}
 		
+		System.out.println("Cars Array:");
+		for(Car c:cars)
+			System.out.println(c);
+		System.out.println();
+		System.out.println("CSDLL:");
+		list.printList();
+		System.out.println();
 		
+		
+		for(int i  = 0;  i < cars.length; i++)
+		{
+			System.out.println("Array:" + cars[i]+"\nList:" + list.get(i)+ "\n");
+			assertEquals(cars[i], list.get(i));
+		}
+		
+
 	}
 }

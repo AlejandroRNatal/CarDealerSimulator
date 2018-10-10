@@ -180,7 +180,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	{
 		if(isEmpty())return false;
 		
-		DNode<E> ptr = this.first;
+		DNode<E> ptr = this.first.getNext();
 		int i = 0;
 		boolean contains = false;
 		
@@ -192,7 +192,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 				break;
 			}
 			ptr = ptr.getNext();
-			
+			i++;
 		}
 		ptr = null;
 		return contains;
