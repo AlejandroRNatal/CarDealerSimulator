@@ -27,10 +27,29 @@ public class CarManager
 {
 
 	private final CopyOnWriteArrayList<Car> cList = MockCarList.getInstance();   
-	private CSDLL<Car> sorting = new CSDLL();
+	private CSDLL<Car> sorting;
+	
+	
+	private void updateList()
+	{
+		int s = cList.size();
+		sorting = new CSDLL();
+		for(int i = 0; i < s ; i++)
+		{
+			sorting.add(cList.remove(0));
+		}
+		
+		s = sorting.size();
+		for(int i = 0; i < s; i++)
+		{
+			cList.add(sorting.get(i));
+		}
+		
+		sorting.clear();
+	}
 	
 	@GET
-	@Path("/all")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars()
 	{
@@ -50,14 +69,14 @@ public class CarManager
 	    } else {
 	      throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
 	    }
-		  //return null;
-	  }     
+	 }     
 	  
 	   @POST
 	    @Path("/add")
 	    @Produces(MediaType.APPLICATION_JSON)
-	    public Response addCarr(Car car){
+	    public Response addCar(Car car){
 	      cList.add(car);
+	      updateList();
 	      return Response.status(201).build();
 	    }  
 	   
@@ -72,6 +91,7 @@ public class CarManager
 	      if (match.isPresent()) {
 	        matchIdx = cList.indexOf(match.get());
 	        cList.set(matchIdx, car);
+	        updateList();
 	        return Response.status(Response.Status.OK).build();
 	      } else {
 	        return Response.status(Response.Status.NOT_FOUND).build();      
@@ -87,7 +107,9 @@ public class CarManager
 	       throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
 	      }
 	      else {
-	    	  return Response.status(Response.Status.OK).build();
+	    	  Response temp = Response.status(Response.Status.OK).build();
+	    	  updateList();
+	    	  return temp ;
 	      }
 	    }       
 }

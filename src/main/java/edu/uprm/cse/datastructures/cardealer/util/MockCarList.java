@@ -82,4 +82,19 @@ public class MockCarList {
 	  public static CopyOnWriteArrayList<Car> getInstance(){
 	    return cList;
 	  }
+	  
+	  public String toString()
+	  {
+		  StringBuilder str_b = new StringBuilder();
+		  
+		  str_b.append("{\n");
+		  for(Car c :cList)
+		  {
+			  str_b.append("\t");
+			  str_b.append(c.toString());
+			  str_b.append("\n");
+		  }
+		  str_b.append("\n}");
+		  return str_b.toString(); 
+	  }
 }

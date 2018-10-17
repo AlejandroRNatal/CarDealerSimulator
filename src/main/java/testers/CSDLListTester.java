@@ -22,8 +22,6 @@ public class CSDLListTester
 		
 		for(int i = 0 ; i < 10; i++)
 		{
-			//for(int j = 0; j < 2 ; j++)
-				//cars[i] = new Car((long)i,brands[i],models[i],options[rand.nextInt(2)], rand.nextDouble());
 				cars[i] = new Car((long)i,brands[rand.nextInt(10)],models[rand.nextInt(10)],options[rand.nextInt(2)], rand.nextDouble());
 				
 		}
@@ -72,6 +70,12 @@ public class CSDLListTester
 		brands();
 	}
 	
+	private static void printList(CSDLL li)
+	{
+		System.out.println("CSDLL: Size("+li.size() +")");
+		li.printList();
+		System.out.println();
+	}
 	
 	@Test
 	public void test()
@@ -80,24 +84,36 @@ public class CSDLListTester
 		Car[] cars = cars();
 		for(Car c: cars)
 		{
-			System.out.println(c);
+			//System.out.println(c);
 			list.add(c);
 		}
 		
-		System.out.println("Cars Array:");
+		System.out.println("Cars Array: Size("+ cars.length+")");
 		for(Car c:cars)
 			System.out.println(c);
 		System.out.println();
-		System.out.println("CSDLL:");
-		list.printList();
+		
+		printList(list);
+		
+		System.out.println();
+		int ran = rand.nextInt(10);
+		Car temp = list.get(ran);
+		assertTrue(list.contains(temp));
+		printList(list);
+		
+		System.out.println("Car to remove:"+temp);
+		System.out.println();
+		boolean remo = list.remove(temp);
+		
+		assertTrue(remo);
+		printList(list);
 		System.out.println();
 		
-		
-		for(int i  = 0;  i < cars.length; i++)
-		{
-			System.out.println("Array:" + cars[i]+"\nList:" + list.get(i)+ "\n");
-			assertEquals(cars[i], list.get(i));
-		}
+//		for(int i  = 0;  i < cars.length; i++)
+//		{
+//			System.out.println("["+i+"]"+"Array:" + cars[i]+"\nList:" + list.get(i)+ "\n");
+//			//\assertEquals(cars[i], list.get(i));
+//		}
 		
 
 	}

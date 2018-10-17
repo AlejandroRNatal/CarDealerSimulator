@@ -3,7 +3,7 @@ package edu.uprm.cse.datastructures.cardealer.util;
 
 import java.util.Iterator;
 
-public class CircularIterator<T> implements Iterable<T> {
+public class CircularIterator<T> implements Iterator<Node<T>> {
 
 	 private final Node<T> first;
 	    private Node<T> mPosition;

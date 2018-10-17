@@ -12,6 +12,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	private int size;
 	private AbstractComparator<E> comp;
 	
+	//Uses dummy header
 	public CircularSortedDoublyLinkedList()
 	{
 		this.comp = (AbstractComparator<E>) comparator();
@@ -21,7 +22,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	
 	public Iterator<E> iterator() 
 	{
-		return (Iterator<E>) new CircularIterator(this.first);
+		return  (Iterator<E>) new CircularIterator(this.first);
 	}
 
 	public Comparator<E> comparator()
@@ -30,16 +31,16 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 	public boolean add(E obj)
 	{
-		boolean contains = true;
-		if(this.contains(obj))contains = false;
-			
+//		boolean contains = true;
+//		if(this.contains(obj))contains = false;
+		if(contains(obj))return true;	
 		if(this.isEmpty())
 		{
 			DNode<E> temp = new DNode(obj,this.first, this.first);
 			this.first.setNext(temp);
 			this.first.setPrev(temp);
 			this.size++;
-			return contains;
+			return false;
 		}
 		else{
 			DNode<E>current = this.first.getPrev();
@@ -49,9 +50,11 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		}
 		
 		this.size++;
+		//Triple sort because we're too dumb to find an efficient execution
 		arraySort();
-		
-		return contains;
+		arraySort();
+		arraySort();
+		return false;
 	}
 
 	public int size()
@@ -61,47 +64,50 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 
 	public boolean remove(E obj)
 	{
+		if(isEmpty())
+			return false;
 		if(!contains(obj))
 			return false;
+		boolean removed = false;
 		
-		if(this.first().equals(obj))
+		DNode<E> ptr = this.first.getNext();
+		for(int i = 0 ; i < this.size(); i++)
+		//while(!ptr.equals(this.getFirstNode()))
 		{
-			this.first.getPrev().setNext(this.first.getNext());
-			this.first.getNext().setPrev(this.first.getPrev());
-			
-			this.first = this.first.getNext();
-			this.first.cleanLinks();
-			this.first.setElement(null);
-			this.first.setPrev(this.first);
-			this.first.setNext(this.first);
-			this.size--;
-			return true;
-		}
-		
-		DNode<E> ptr = this.first;
-		while(!ptr.getElement().equals(obj))
-		{
+			if(ptr.getElement().equals(obj))
+			{
+				ptr.getPrev().setNext(ptr.getNext());
+				ptr.getNext().setPrev(ptr.getPrev());
+				
+				ptr.setElement(null);
+				//ptr.cleanLinks();
+				this.size--;
+				removed = true;
+				break;
+			}
 			ptr = ptr.getNext();
 		}
 		
-		ptr.getPrev().setNext(ptr.getNext());
-		ptr.getNext().setPrev(ptr.getPrev());
-		
-		ptr.setElement(null);
-		ptr.cleanLinks();
-		this.size--;
-		
-		return true;
+
+//		arraySort();
+//		arraySort();
+//		arraySort();
+		return removed;
 	}
 
+	protected Node<E> getFirstNode()
+	{
+		return this.first.getNext();
+	}
+	
 	public boolean remove(int index)
 	{
-		if(index < 0 | index > this.size())
+		if(index < 0 | index >= this.size())
 			return false;
 		
-		DNode<E> ptr = this.first;
+		DNode<E> ptr = this.first.getNext();
 		int i = 0;
-		while(i != index)
+		while(i <= index)
 		{
 			ptr = ptr.getNext();
 			i++;
@@ -110,20 +116,20 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		ptr.getNext().setPrev(ptr.getPrev());
 		
 		ptr.setElement(null);
-		ptr.cleanLinks();
+//		ptr.cleanLinks();
 		
 		this.size--;
-		
-		return false;
+		//arraySort();arraySort();arraySort();
+		return true;
 	}
 
 	public int removeAll(E obj) 
 	{
-		if(!contains(obj))
+		if(!this.contains(obj))
 			return 0;
 		
 		int i = 0;
-		while(contains(obj))
+		while(this.contains(obj))
 		{
 			remove(obj);
 			i++;
@@ -135,6 +141,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		return this.first.getNext().getElement();
 	}
 
+	//Can be more efficient but whatever
 	public E last() {
 		DNode<E> ptr = this.first;
 		
@@ -181,18 +188,17 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		if(isEmpty())return false;
 		
 		DNode<E> ptr = this.first.getNext();
-		int i = 0;
 		boolean contains = false;
 		
-		while(i < this.size())
+		//while(!ptr.equals(this.getFirstNode()))
+		for(int i = 0; i < this.size()  ; i++, ptr = ptr.getNext())
 		{
 			if(ptr.getElement().equals(e))
 			{
 				contains = true;
 				break;
 			}
-			ptr = ptr.getNext();
-			i++;
+
 		}
 		ptr = null;
 		return contains;
@@ -202,17 +208,43 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 		return this.size() == 0;
 	}
 
-	
+	//TODO Might be wrong, change to a for loop
 	public int firstIndex(E e)
 	{
 		//Returns -1 if list is empty
 		if(this.isEmpty())
 			return -1;
-		return 0;
+		Iterator<E> iter = iterator();
+		E temp;
+		int ind = 0;
+		while(iter.hasNext())
+		{
+			temp = iter.next();
+			ind++;
+			if(temp.equals(e));
+				return ind;
+			
+			
+		}
+		
+		return -1;
 	}
 
 	public int lastIndex(E e) {
-		return this.size()-1 % this.size();
+		
+		if(this.isEmpty() || !this.contains(e))
+			return -1;
+		
+		Node<E> temp = this.first.getNext();
+		int ind = 0;
+		
+		for(int i = 0; i < this.size(); i++, temp = temp.getNext())
+		{
+			if(temp.getElement().equals(e))
+				ind = i;
+		}
+		
+		return ind;
 	}
 	
 	private void addFirstNode(DNode<E> nuevo)
@@ -282,19 +314,19 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 			after = after.getNext();
 		}
 		
-//		temp = after;
-//		after = after.getNext();
-//		int n = comp.compare(temp.getElement(),after.getElement());
-//		switch(n)
-//		{
-//			case 1:
-//				swapElements(temp ,after);
-//				break;
-//		
-//				
-//			default:
-//				break;
-//		}
+		temp = after;
+		after = after.getNext();
+		 n = comp.compare(temp.getElement(),after.getElement());
+		switch(n)
+		{
+			case 1:
+				swapElements(temp ,after);
+				break;
+		
+				
+			default:
+				break;
+		}
 	}
 	
 	private void swap(E[] arr,int target, int rec)
@@ -371,6 +403,7 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	}
 
 	
+
 	private DNode<E> getLastNode(){
 //		if (isEmpty()) 
 //			throw new IllegalStateException("List is empty."); 
@@ -461,6 +494,37 @@ public class CircularSortedDoublyLinkedList<E> implements SortedList<E>
 	
 	}
 
+	public class CircularIterator<T> implements Iterator<Node<T>> {
+
+		 private final Node<T> first;
+		    private Node<T> mPosition;
+
+
+		    public CircularIterator(Node<T> first) {
+		        this.first = first;
+		        this.mPosition = this.first;
+		        
+		    }
+
+		   
+		    public boolean hasNext() {
+		        return !this.mPosition.getNext().equals(this.first);
+		    }
+
+		    
+		    public Node<T> next() {
+		        if (!hasNext())
+		            return this.first;
+
+		        mPosition = mPosition.getNext();
+
+		        return  mPosition;
+		    }
+	
+	}
+
+
+	
 }
 
 	
