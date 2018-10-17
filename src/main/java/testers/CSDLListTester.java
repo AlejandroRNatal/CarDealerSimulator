@@ -2,6 +2,7 @@ package testers;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.Test;
@@ -88,6 +89,8 @@ public class CSDLListTester
 			list.add(c);
 		}
 		
+		Iterator<Car> iter = list.iterator();
+		
 		System.out.println("Cars Array: Size("+ cars.length+")");
 		for(Car c:cars)
 			System.out.println(c);
@@ -109,11 +112,13 @@ public class CSDLListTester
 		printList(list);
 		System.out.println();
 		
-//		for(int i  = 0;  i < cars.length; i++)
-//		{
-//			System.out.println("["+i+"]"+"Array:" + cars[i]+"\nList:" + list.get(i)+ "\n");
-//			//\assertEquals(cars[i], list.get(i));
-//		}
+		System.out.println("");
+		System.out.println("Size:("+list.size()+")");
+		assertTrue(iter.hasNext());
+		while(iter.hasNext())
+		{
+			System.out.println(iter.next());
+		}
 		
 
 	}
