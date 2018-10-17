@@ -26,26 +26,39 @@ import edu.uprm.cse.datastructures.cardealer.util.MockCarList;
 public class CarManager
 {
 
-	private final CopyOnWriteArrayList<Car> cList = MockCarList.getInstance();   
+	private static final CopyOnWriteArrayList<Car> cList = MockCarList.getInstance();   
 	private CSDLL<Car> sorting;
 	
 	
 	private void updateList()
 	{
-		int s = cList.size();
 		sorting = new CSDLL();
-		for(int i = 0; i < s ; i++)
-		{
-			sorting.add(cList.remove(0));
+//		int s = cList.size();
+//		//System.out.println(s);
+//		sorting = new CSDLL();
+//		for(int i = 0; i < s ; i++)
+//		{
+//			sorting.add(cList.remove(0));
+//		}
+//		//System.out.println(s);
+//		
+//		s = sorting.size();
+//		for(int i = 0; i < s; i++)
+//		{
+//			cList.add(sorting.get(i));
+//		}
+//		
+//		sorting.clear();
+		for(Car a: cList) {
+			sorting.add(a);
 		}
+		cList.clear();
 		
-		s = sorting.size();
-		for(int i = 0; i < s; i++)
-		{
-			cList.add(sorting.get(i));
+		for(int i=0;i<sorting.size();i++) {
+			cList.add((Car) sorting.get(i));
+			
 		}
-		
-		sorting.clear();
+		//sorting.clear();
 	}
 	
 	@GET
@@ -53,11 +66,12 @@ public class CarManager
 	@Produces(MediaType.APPLICATION_JSON)
 	public Car[] getAllCars()
 	{
+		updateList();
 		return cList.toArray(new Car[0]);
 	}
 	
 	  @GET
-	  @Path("{id}")
+	  @Path("/{id}")
 	  @Produces(MediaType.APPLICATION_JSON)
 	  public Car getCar(@PathParam("id") long id){
 	    Optional<Car> match
@@ -65,6 +79,7 @@ public class CarManager
 	        .filter(c->c.getCarId() == id)
 	        .findFirst();
 	    if (match.isPresent()) {
+	    	updateList();
 	      return match.get();
 	    } else {
 	      throw new NotFoundException(new JsonError("Error", "Car " + id + " not found"));
@@ -108,7 +123,7 @@ public class CarManager
 	      }
 	      else {
 	    	  Response temp = Response.status(Response.Status.OK).build();
-	    	  updateList();
+//	    	  updateList();
 	    	  return temp ;
 	      }
 	    }       
